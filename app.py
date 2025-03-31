@@ -9,64 +9,8 @@ st.set_page_config(
 
 st.title("Simulador de economia financeira com E-book")
 
-st.markdown("""
-<style>
-    footer {
-        visibility: hidden;
-    }
-    .custom-footer {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        text-align: center;
-        padding: 10px;
-        background-color: #f0f2f6;
-        font-size: 0.8rem;
-        color: #555;
-        border-top: 1px solid #ddd;
-    }
-    .logo-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .stButton>button {
-        background-color: #FFF;
-        color: black;
-        font-weight: bold;
-        width: 200px;
-        font-size: 160%;
-    }
-    .botao {
-        display: flex;
-        justify-content: center;
-        flex-direction: row;
-    }
-    div.row-widget.stButton {
-        text-align: center;
-        width: 100%;
-    }
-    .stButton>button:hover {
-        background-color: #000;
-        color: white;
-        border-color: #000;
-    }
-    .economia-title {
-        font-size: 150%;
-        font-weight: bold;
-    }
-    .economia {
-        color: #30FF90;
-        font-size: 130%;
-        font-weight: bold;
-    }
-    .perda {
-        color: #FF6060;
-        font-size: 130%;
-        font-weight: bold;
-    }
-</style>
-""", unsafe_allow_html=True)
+with open('styles.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def formata_input_dinheiro(input_value):
     limpo = ''.join(c for c in input_value if c.isdigit() or c in [',', '.'])
@@ -157,36 +101,9 @@ with st.container():
             placeholder="%",
             help="Percentual da mensalidade referente ao E-book"
         )
-
-# col1, col2, col3 = st.columns([1, 1, 1])
-# with col2:
-#     st.markdown('<div class="botao">', unsafe_allow_html=True)
-#     st.markdown('</div>', unsafe_allow_html=True)
  
-st.markdown("""
-<style>
-    div.stButton {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .stButton>button {
-        background-color: #FFF;
-        color: black;
-        font-weight: bold;
-        width: 300px;
-        font-size: 200%; 
-        padding: 10px 0; 
-        margin: 20px 0;
-        transition: all 0.5s;
-    }
-</style>
-""", unsafe_allow_html=True)    
 simulate_button = st.button("SIMULAR")
-
 st.divider()
-
 st.header("Resultados da simulação")
 
 if simulate_button:
@@ -231,9 +148,9 @@ if simulate_button:
             st.markdown("**COFINS (3%)**")
             st.markdown("**ISS (5%)**")
             st.markdown("**IRPJ (15% de 32%)**")
-            st.markdown("**IRPJ (15% de 8%**")
+            st.markdown("**IRPJ (15% de 8%)**")
             st.markdown("**CSLL (9% de 32%)**")
-            st.markdown("**CSLL (9% de 12%**")
+            st.markdown("**CSLL (9% de 12%)**")
             st.markdown("**Carga Total**")
             st.markdown('<div class="economia-title">ECONOMIA MENSAL</div>', unsafe_allow_html=True)
             

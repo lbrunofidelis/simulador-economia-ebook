@@ -1,14 +1,14 @@
-# E-book Simulator
+# Simulador de economia financeira com e-book
 
-O Simulador de Economia Financeira com E-book é uma ferramenta que permite calcular potenciais economias tributárias ao incluir produtos digitais (E-books) em seu modelo de negócio.
+O Simulador de Economia Financeira com E-book é uma ferramenta que permite calcular potenciais economias tributárias ao incluir e-books em seu modelo de negócio.
 
 ## Como usar
 
 1. Preencha os campos:
 
-    - Mensalidade (R$): valor cobrado por contrato
-    - Quantidade de contratos: número de contratos ativos
-    - Valor E-book (%): percentual da mensalidade referente ao E-book
+    - Mensalidade (R$): valor cobrado por contrato;
+    - Quantidade de contratos: número de contratos ativos;
+    - Valor E-book (%): percentual da mensalidade referente ao E-book;
 
 2. Clique no botão "SIMULAR" para ver os resultados
 

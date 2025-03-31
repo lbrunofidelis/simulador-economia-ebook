@@ -1,0 +1,86 @@
+footer {
+    visibility: hidden;
+}
+
+.custom-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #f0f2f6;
+    font-size: 0.8rem;
+    color: #555;
+    border-top: 1px solid #ddd;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+div.stButton {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.stButton>button {
+    background-color: #FFF;
+    color: black;
+    font-weight: bold;
+    width: 300px;
+    font-size: 200%; 
+    padding: 10px 0; 
+    margin: 20px 0;
+    transition: all 0.5s;
+}
+
+.stButton>button:hover {
+    background-color: #000;
+    color: white;
+    border-color: #000;
+}
+
+.economia-title {
+    font-size: 150%;
+    font-weight: bold;
+}
+
+.economia {
+    color: #30FF90;
+    font-size: 130%;
+    font-weight: bold;
+}
+
+.perda {
+    color: #FF6060;
+    font-size: 130%;
+    font-weight: bold;
+}
+
+@media (max-width: 640px) {
+    .stButton>button {
+        width: 100% !important;
+        font-size: 140% !important;
+    }
+    
+    .economia-title {
+        font-size: 120% !important;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .economia {
+        font-size: 100% !important;
+    }
+    
+    .perda {
+        font-size: 100% !important;
+    }
+    .streamlit-expanderHeader {
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
