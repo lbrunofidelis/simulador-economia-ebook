@@ -153,6 +153,7 @@ if simulate_button:
             st.markdown("**CSLL (9% de 12%)**")
             st.markdown("**Carga Total**")
             st.markdown('<div class="economia-title">ECONOMIA MENSAL</div>', unsafe_allow_html=True)
+            st.markdown('<div class="economia-title">ECONOMIA ANUAL</div>', unsafe_allow_html=True)
             
         with col2:
             st.subheader("Sem e-book")
@@ -182,5 +183,6 @@ if simulate_button:
             st.markdown(f"**{formata_dinheiro(csll12_ebook)}**")
             st.markdown(f"**{formata_dinheiro(carga_total_ebook)}**")
             st.markdown(f'<div class="{classe}">{formata_dinheiro(economia)}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="{classe}">{formata_dinheiro(economia*12)}</div>', unsafe_allow_html=True)
 else:
     st.info("Preencha todos os campos acima e clique em SIMULAR para visualizar os resultados da simulação.")
