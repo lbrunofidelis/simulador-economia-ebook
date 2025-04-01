@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 st.set_page_config(
     page_title="Simulador de economia financeira com E-book",
@@ -7,10 +8,12 @@ st.set_page_config(
     page_icon="💵"
 )
 
-st.title("Simulador de economia financeira com E-book")
-
 with open('styles.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+st.title("Simulador de economia financeira com E-book")
+
+st.text("Este simulador é uma ferramenta que permite calcular potenciais economias tributárias ao incluir e-books em seu modelo de negócio.")
 
 def formata_input_dinheiro(input_value):
     limpo = ''.join(c for c in input_value if c.isdigit() or c in [',', '.'])
@@ -102,6 +105,7 @@ with st.container():
             help="Percentual da mensalidade referente ao E-book"
         )
  
+isenta_pis_cofins = st.toggle("Isenta PIS/COFINS")
 simulate_button = st.button("SIMULAR")
 st.divider()
 st.header("Resultados da simulação")
@@ -121,8 +125,13 @@ if simulate_button:
         
         valor_ebook = receita_bruta * (percentual_ebook / 100)
         base_calculo_com_ebook = receita_bruta - valor_ebook
-        pis_ebook = base_calculo_com_ebook * 0.0065
-        cofins_ebook = base_calculo_com_ebook * 0.03
+        if isenta_pis_cofins:
+            pis_ebook = base_calculo_com_ebook * 0.0065
+            cofins_ebook = base_calculo_com_ebook * 0.03
+        else:
+            pis_ebook = pis
+            cofins_ebook = cofins
+            
         iss_ebook = base_calculo_com_ebook * 0.05
         irpj_ebook = 0.15 * (base_calculo_com_ebook * 0.32)
         irpj8_ebook =  0.15 * (base_calculo_com_ebook * 0.08)
@@ -135,54 +144,97 @@ if simulate_button:
             classe = 'economia'
         else:
             classe = 'perda'
-
-        # Tabelinha:
-        col1, col2, col3 = st.columns(3)
         
-        with col1:
-            st.subheader("")
-            st.markdown("**Receita Bruta**")
-            st.markdown("**E-book**")
-            st.markdown("**Base de Cálculo Imposto**")
-            st.markdown("**PIS (0,65%)**")
-            st.markdown("**COFINS (3%)**")
-            st.markdown("**ISS (5%)**")
-            st.markdown("**IRPJ (15% de 32%)**")
-            st.markdown("**IRPJ (15% de 8%)**")
-            st.markdown("**CSLL (9% de 32%)**")
-            st.markdown("**CSLL (9% de 12%)**")
-            st.markdown("**Carga Total**")
-            st.markdown('<div class="economia-title">ECONOMIA MENSAL</div>', unsafe_allow_html=True)
-            st.markdown('<div class="economia-title">ECONOMIA ANUAL</div>', unsafe_allow_html=True)
+        data = {
+            "Item": [
+                "Receita Bruta",
+                "Valor do E-book (R$)",
+                "Base de Cálculo Imposto",
+                "PIS (0,65%)",
+                "COFINS (3%)",
+                "ISS (5%)",
+                "IRPJ (15% de 32%)",
+                "IRPJ (15% de 8%)",
+                "CSLL (9% de 32%)",
+                "CSLL (9% de 12%)",
+                "Carga Total",
+                "Economia por mensalidade",
+                "Economia mensal",
+                "Economia anual"
+            ],
+            "Sem e-book": [
+                formata_dinheiro(receita_bruta),
+                "-",
+                formata_dinheiro(base_calculo_sem_ebook),
+                formata_dinheiro(pis),
+                formata_dinheiro(cofins),
+                formata_dinheiro(iss),
+                formata_dinheiro(irpj),
+                "-",
+                formata_dinheiro(csll),
+                "-",
+                formata_dinheiro(carga_total),
+                "-",
+                "-",
+                "-"
+            ],
+            "Com e-book": [
+                formata_dinheiro(receita_bruta),
+                formata_dinheiro(valor_ebook),
+                formata_dinheiro(base_calculo_com_ebook),
+                formata_dinheiro(pis_ebook),
+                formata_dinheiro(cofins_ebook),
+                formata_dinheiro(iss_ebook),
+                formata_dinheiro(irpj_ebook),
+                formata_dinheiro(irpj8_ebook),
+                formata_dinheiro(csll_ebook),
+                formata_dinheiro(csll12_ebook),
+                formata_dinheiro(carga_total_ebook),
+                formata_dinheiro(economia/qtd_contratos),
+                formata_dinheiro(economia),
+                formata_dinheiro(economia*12)
+            ]
+        }
+        
+        df = pd.DataFrame(data)
+        
+        def highlight_row(row):
+            styles = [''] * len(row)
+            if row.name >= 12:
+                styles[2] = f'color: {"#11b35c" if economia >= 0 else "#ee3838"}; font-weight: bold; font-size: 125%'
+            if row.name == 0 or row.name == 2 or row.name == 10:
+                styles = ['font-weight: bold'] * len(row)
+            return styles
+        
+        styled_df = df.style.apply(highlight_row, axis=1)
+        
+        st.dataframe(styled_df, use_container_width=True, height=530)
+        
+        st.markdown("### Resumo da Economia 💵")
+        col1, col2 = st.columns(2)
+        if economia >= 0:
+            with col1:
+                st.markdown(f"""
+                <div style='font-size: 20px; font-weight: bold; margin: 15px 0; padding: 10px; background-color: {"#e6f7ef" if economia >= 0 else "#fce8e6"}; border-radius: 5px;'>
+                    <span>Você economiza por mês: <span style='color: {"#11b35c" if economia >= 0 else "#ee3838"};'>{formata_dinheiro(economia)}</span></span><br>
+                    <span>Você economiza por ano: <span style='color: {"#11b35c" if economia >= 0 else "#ee3838"};'>{formata_dinheiro(economia*12)}</span></span>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            with col1:
+                st.error(f"Com essa configuração, você teria um aumento de {formata_dinheiro(abs(economia))} por mês em impostos.")
             
-        with col2:
-            st.subheader("Sem e-book")
-            st.markdown(f"**{formata_dinheiro(receita_bruta)}**")
-            st.markdown("**-**")
-            st.markdown(f"**{formata_dinheiro(base_calculo_sem_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(pis)}**")
-            st.markdown(f"**{formata_dinheiro(cofins)}**")
-            st.markdown(f"**{formata_dinheiro(iss)}**")
-            st.markdown(f"**{formata_dinheiro(irpj)}**")
-            st.markdown(f"**-**")
-            st.markdown(f"**{formata_dinheiro(csll)}**")
-            st.markdown(f"**-**")
-            st.markdown(f"**{formata_dinheiro(carga_total)}**")
-            
-        with col3:
-            st.subheader("Com e-book")
-            st.markdown(f"**{formata_dinheiro(receita_bruta)}**")
-            st.markdown(f"**{formata_dinheiro(valor_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(base_calculo_com_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(pis_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(cofins_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(iss_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(irpj_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(irpj8_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(csll_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(csll12_ebook)}**")
-            st.markdown(f"**{formata_dinheiro(carga_total_ebook)}**")
-            st.markdown(f'<div class="{classe}">{formata_dinheiro(economia)}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="{classe}">{formata_dinheiro(economia*12)}</div>', unsafe_allow_html=True)
+        # if economia >= 0:
+            # st.success(f"Com a estratégia do e-book, você economiza {formata_dinheiro(economia)} por mês em impostos!")
+        
+        with col2:     
+            with st.expander("LEGENDA", expanded=False):
+                st.markdown("""
+                - **Receita Bruta**: Valor total recebido de todos os contratos
+                - **E-book**: Valor atribuído ao e-book conforme o percentual escolhido
+                - **Base de Cálculo Imposto**: Valor sobre o qual os impostos serão calculados
+                - **PIS/COFINS/ISS**: Impostos calculados sobre a base de cálculo
+                - **IRPJ/CSLL**: Impostos sobre o lucro presumido
+                """)
 else:
     st.info("Preencha todos os campos acima e clique em SIMULAR para visualizar os resultados da simulação.")
